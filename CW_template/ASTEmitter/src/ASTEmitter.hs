@@ -77,7 +77,18 @@ ppRHSExpr = show
 
 -- Pretty-printer for the function signatures
 ppFSig :: FunctionSignature -> String
-ppFSig = show 
+ppFSig (functionName, args) = functionName ++ " :: " ++ (intercalate " -> " (map helperOne args))
+
+helperOne :: Expr -> String
+helperOne (Scalar _ dataType _) = ppDType dataType
+helperOne (FVec content expr) = "FVec " ++ (show content) ++ (helperOne expr)
+helperOne (SVec size expr) = "SVec " ++ (show size) ++ (helperOne expr)
+helperOne (Tuple exprs) = 
+    let 
+        argList = intercalate "," (map helperOne exprs)
+    in
+        if (length argList) == 0 then ""
+        else "(" ++ argList ++ ")"
 
 -- Pretty-printer for the argument data types
 ppDType :: DType -> String
