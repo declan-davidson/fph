@@ -65,10 +65,10 @@ data Expr =
                     | FVec [(Offset,Size)] Expr -- This is for non-map args FIXME! bounds i.o range
                     | Function Name [Expr] -- 2nd arg is list of non-map/fold args
         -- Higher-order types: add the types for zipt, unzipt, map and stencil
-                    | ... -- zipt
-                    | ... -- unzipt
-                    | ... -- map f v
-                    | ... -- stencil s v
+                    | ZipT [Expr] -- zipt
+                    | UnzipT Expr -- unzipt
+                    | Map Expr Expr -- map f v
+                    | Stencil Expr Expr -- stencil s v
                         deriving (Show, Read, Ord, Data, Typeable)
 
 instance Eq Expr where
