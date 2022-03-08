@@ -77,18 +77,22 @@ ppRHSExpr = show
 
 -- Pretty-printer for the function signatures
 ppFSig :: FunctionSignature -> String
-ppFSig (functionName, args) = functionName ++ " :: " ++ (intercalate " -> " (map helperOne args))
+ppFSig (functionName, args) = functionName ++ " :: " ++ (intercalate " -> " (ppFArgDTypes args))
 
-helperOne :: Expr -> String
-helperOne (Scalar _ dataType _) = ppDType dataType
-helperOne (FVec content expr) = "FVec " ++ (show content) ++ (helperOne expr)
-helperOne (SVec size expr) = "SVec " ++ (show size) ++ (helperOne expr)
-helperOne (Tuple exprs) = 
-    let 
-        argList = intercalate "," (map helperOne exprs)
+ppFArgDTypes :: [Expr] -> [String]
+ppFArgDTypes [] = []
+ppFArgDTypes (firstArg:remainingArgs) = 
+    let firstArgDType = ppFArgDType firstArg
+        remainingArgDTypes = ppFArgDTypes remainingArgs
     in
-        if (length argList) == 0 then ""
-        else "(" ++ argList ++ ")"
+        if firstArgDType == "()" then ppFArgDTypes remainingArgs
+        else firstArgDType : (ppFArgDTypes remainingArgs)
+
+ppFArgDType :: Expr -> String
+ppFArgDType (Scalar _ dataType _) = ppDType dataType
+ppFArgDType (FVec content expr) = "FVec " ++ (show content) ++ (ppFArgDType expr)
+ppFArgDType (SVec size expr) = "SVec " ++ (show size) ++ (ppFArgDType expr)
+ppFArgDType (Tuple exprs) = "(" ++ intercalate "," (map ppFArgDType exprs) ++ ")"
 
 -- Pretty-printer for the argument data types
 ppDType :: DType -> String
