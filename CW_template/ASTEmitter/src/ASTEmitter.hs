@@ -121,7 +121,7 @@ ppArgs pp argDecls
 
 -- Pretty-printer for stencil definitions
 ppStencilDef :: StencilDefinition -> String
-ppStencilDef = show 
+ppStencilDef (name, values) = name ++ " = " ++ (show values)
 
 ppMainTypeDecl :: ([(String,DType)],[(String,DType)]) -> String
 ppMainTypeDecl mainArgDeclsList_ = let
