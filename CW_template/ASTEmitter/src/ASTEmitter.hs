@@ -92,7 +92,7 @@ ppDType (DTuple dts) = "("++  intercalate ", " (map ppDType dts) ++")"
 ppDType DDC = show DDC
 
 ppArgDecl :: (String, DType) -> String
-ppArgDecl = show
+ppArgDecl (argName, argType) = argName ++ " :: " ++ (ppDType argType)
 
 ppArgDeclType :: (String, DType) -> String
 ppArgDeclType (_,argType) = ppDType argType
