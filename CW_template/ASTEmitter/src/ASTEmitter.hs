@@ -92,7 +92,6 @@ ppRHSExpr (Map function args) = "map (" ++ ppRHSExpr function  ++ ") " ++ ppRHSE
 ppRHSExpr (UnzipT expr) = "unzipt (" ++ ppRHSExpr expr ++ ")" 
 
 ppRHSExpr (Stencil firstExpr secondExpr) = "stencil " ++ ppRHSExpr firstExpr ++ " " ++ ppRHSExpr secondExpr
-ppRHSExpr x = show x
 
 
 -- Pretty-printer for the function signatures
