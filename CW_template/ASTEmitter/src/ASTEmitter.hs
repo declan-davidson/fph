@@ -70,7 +70,10 @@ ppExprTup :: (Expr, Expr) -> String
 ppExprTup (lhs,rhs) = ppLHSExpr lhs ++ " = " ++ ppRHSExpr rhs
 
 ppLHSExpr  :: Expr -> String
-ppLHSExpr = show
+ppLHSExpr (Scalar _  _ name) = name
+ppLHSExpr (Tuple exprs) = "(" ++ intercalate "," (map ppLHSExpr exprs) ++ ")"
+ppLHSExpr (Vec _ expr) = ppLHSExpr expr
+ppLHSExpr (SVec _ expr) = ppLHSExpr expr
 
 ppRHSExpr :: Expr -> String
 ppRHSExpr = show
