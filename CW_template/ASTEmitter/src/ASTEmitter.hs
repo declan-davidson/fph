@@ -76,7 +76,11 @@ ppLHSExpr (Vec _ expr) = ppLHSExpr expr
 ppLHSExpr (SVec _ expr) = ppLHSExpr expr
 
 ppRHSExpr :: Expr -> String
-ppRHSExpr = show
+ppRHSExpr (Vec _ (Scalar _ _ name)) = name
+ppRHSExpr (Function name _) = name
+ppRHSExpr (ZipT exprs) = "zipt " ++ "(" ++ (intercalate "," (map ppRHSExpr exprs)) ++ ")"
+ppRHSExpr (Map function args) = "map " ++ (ppRHSExpr function) ++ " " ++ (ppRHSExpr args)
+ppRHSExpr x = show x
 
 -- Pretty-printer for the function signatures
 ppFSig :: FunctionSignature -> String
