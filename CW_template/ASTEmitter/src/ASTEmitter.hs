@@ -81,24 +81,23 @@ ppRHSExpr (SVec _ expr) = ppRHSExpr expr
 ppRHSExpr (FVec _ expr) = ppRHSExpr expr
 ppRHSExpr (Scalar _ _ name) = name
 ppRHSExpr (Function name []) = name
-ppRHSExpr (Function name args) = name ++ " (" ++ (intercalate "," (map ppRHSExpr args)) ++ ")"
-ppRHSExpr (ZipT exprs) = "zipt (" ++ (intercalate "," (map ppRHSExpr exprs)) ++ ")"
+ppRHSExpr (Function name args) = name ++ " (" ++ intercalate "," (map ppRHSExpr args) ++ ")"
+ppRHSExpr (ZipT exprs) = "zipt (" ++ intercalate "," (map ppRHSExpr exprs) ++ ")"
 
-ppRHSExpr (Map (Function fName []) (ZipT exprs)) = "map " ++ fName ++ " (" ++ (ppRHSExpr (ZipT exprs)) ++ ")"
-ppRHSExpr (Map (Function fName []) args) = "map " ++ fName ++ " " ++ (ppRHSExpr args)
-ppRHSExpr (Map function (ZipT exprs)) = "map (" ++ (ppRHSExpr function)  ++ ") (" ++ (ppRHSExpr (ZipT exprs)) ++ ")"
-ppRHSExpr (Map function args) = "map (" ++ (ppRHSExpr function)  ++ ") " ++ (ppRHSExpr args)
+ppRHSExpr (Map (Function fName []) (ZipT exprs)) = "map " ++ fName ++ " (" ++ ppRHSExpr (ZipT exprs) ++ ")"
+ppRHSExpr (Map (Function fName []) args) = "map " ++ fName ++ " " ++ ppRHSExpr args
+ppRHSExpr (Map function (ZipT exprs)) = "map (" ++ ppRHSExpr function  ++ ") (" ++ ppRHSExpr (ZipT exprs) ++ ")"
+ppRHSExpr (Map function args) = "map (" ++ ppRHSExpr function  ++ ") " ++ ppRHSExpr args
 
 ppRHSExpr (UnzipT expr) = "unzipt (" ++ ppRHSExpr expr ++ ")" 
 
-ppRHSExpr (Stencil firstExpr secondExpr) = "stencil " ++ (ppRHSExpr firstExpr) ++ " " ++ (ppRHSExpr secondExpr)
+ppRHSExpr (Stencil firstExpr secondExpr) = "stencil " ++ ppRHSExpr firstExpr ++ " " ++ ppRHSExpr secondExpr
 ppRHSExpr x = show x
 
---ppRHSExpr (Map function args) = "map " ++ (ppRHSExpr function) ++ " " ++ (ppRHSExpr args)
 
 -- Pretty-printer for the function signatures
 ppFSig :: FunctionSignature -> String
-ppFSig (functionName, args) = functionName ++ " :: " ++ (intercalate " -> " (ppFArgDTypes args))
+ppFSig (functionName, args) = functionName ++ " :: " ++ intercalate " -> " (ppFArgDTypes args)
 
 ppFArgDTypes :: [Expr] -> [String]
 ppFArgDTypes [] = []
@@ -107,12 +106,12 @@ ppFArgDTypes (firstArg:remainingArgs) =
         remainingArgDTypes = ppFArgDTypes remainingArgs
     in
         if firstArgDType == "()" then ppFArgDTypes remainingArgs
-        else firstArgDType : (ppFArgDTypes remainingArgs)
+        else firstArgDType : ppFArgDTypes remainingArgs
 
 ppFArgDType :: Expr -> String
 ppFArgDType (Scalar _ dataType _) = ppDType dataType
-ppFArgDType (FVec content expr) = "FVec " ++ (show content) ++ (ppFArgDType expr)
-ppFArgDType (SVec size expr) = "SVec " ++ (show size) ++ (ppFArgDType expr)
+ppFArgDType (FVec content expr) = "FVec " ++ show content ++ ppFArgDType expr
+ppFArgDType (SVec size expr) = "SVec " ++ show size ++ ppFArgDType expr
 ppFArgDType (Tuple exprs) = "(" ++ intercalate "," (map ppFArgDType exprs) ++ ")"
 
 -- Pretty-printer for the argument data types
@@ -128,7 +127,7 @@ ppDType (DTuple dts) = "("++  intercalate ", " (map ppDType dts) ++")"
 ppDType DDC = show DDC
 
 ppArgDecl :: (String, DType) -> String
-ppArgDecl (argName, argType) = argName ++ " :: " ++ (ppDType argType)
+ppArgDecl (argName, argType) = argName ++ " :: " ++ ppDType argType
 
 ppArgDeclType :: (String, DType) -> String
 ppArgDeclType (_,argType) = ppDType argType
@@ -142,7 +141,7 @@ ppArgs pp argDecls
 
 -- Pretty-printer for stencil definitions
 ppStencilDef :: StencilDefinition -> String
-ppStencilDef (name, values) = name ++ " = " ++ (show values)
+ppStencilDef (name, values) = name ++ " = " ++ show values
 
 ppMainTypeDecl :: ([(String,DType)],[(String,DType)]) -> String
 ppMainTypeDecl mainArgDeclsList_ = let
