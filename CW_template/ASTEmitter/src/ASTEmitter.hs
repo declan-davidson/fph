@@ -76,11 +76,23 @@ ppLHSExpr (Vec _ expr) = ppLHSExpr expr
 ppLHSExpr (SVec _ expr) = ppLHSExpr expr
 
 ppRHSExpr :: Expr -> String
-ppRHSExpr (Vec _ (Scalar _ _ name)) = name
-ppRHSExpr (Function name _) = name
+ppRHSExpr (Vec _ expr) = ppRHSExpr expr
+ppRHSExpr (SVec _ expr) = ppRHSExpr expr
+ppRHSExpr (FVec _ expr) = ppRHSExpr expr
+ppRHSExpr (Scalar _ _ name) = name
+ppRHSExpr (Function name []) = name
+ppRHSExpr (Function name args) = name ++ " " ++ (intercalate " " (map ppRHSExpr args))
 ppRHSExpr (ZipT exprs) = "zipt " ++ "(" ++ (intercalate "," (map ppRHSExpr exprs)) ++ ")"
-ppRHSExpr (Map function args) = "map " ++ (ppRHSExpr function) ++ " " ++ (ppRHSExpr args)
+
+ppRHSExpr (Map (Function fName []) (ZipT exprs)) = "map " ++ fName ++ " (" ++ (ppRHSExpr (ZipT exprs)) ++ ")"
+ppRHSExpr (Map (Function fName []) args) = "map " ++ fName ++ " " ++ (ppRHSExpr args)
+ppRHSExpr (Map function (ZipT exprs)) = "map (" ++ (ppRHSExpr function)  ++ ") (" ++ (ppRHSExpr (ZipT exprs)) ++ ")"
+ppRHSExpr (Map function args) = "map (" ++ (ppRHSExpr function)  ++ ") " ++ (ppRHSExpr args)
+
+ppRHSExpr (Stencil firstExpr secondExpr) = "stencil " ++ (ppRHSExpr firstExpr) ++ " " ++ (ppRHSExpr secondExpr)
 ppRHSExpr x = show x
+
+--ppRHSExpr (Map function args) = "map " ++ (ppRHSExpr function) ++ " " ++ (ppRHSExpr args)
 
 -- Pretty-printer for the function signatures
 ppFSig :: FunctionSignature -> String
